@@ -6,4 +6,4 @@
       - hostname: 0.uk.pool.ntp.org
         iburst: yes
   tasks:
-    ping:
+    - ping:
