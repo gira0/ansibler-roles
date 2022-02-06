@@ -8,52 +8,54 @@
       become: true
 
     - debug:
-        var: config
+        var: 
       vars:
         config: "{{ read_config.stdout | from_yaml }}"
+    - block:
+      - dnf:
+          name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+          state: present
+          disable_gpg_check: true
+        become: true
 
-    - dnf:
-        name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-        state: present
-        disable_gpg_check: true
-      become: true
 
-    - dnf:
-        name: 
-          - yara
-          - insights-client
-        state: present
-      become: true
+      - dnf:
+          name: 
+            - yara
+            - insights-client
+          state: present
+        become: true
 
-    - command: insights-client --test-connection
-      register: test_connection
-      become: true
+      - command: insights-client --test-connection
+        register: test_connection
+        become: true
 
-    - debug:
-        var: test_connection
+      - debug:
+          var: test_connection
 
-    - command: insights-client --register
-      register: register
-      become: true
+      - command: insights-client --register
+        register: register
+        become: true
 
-    - debug:
-        var: register
+      - debug:
+          var: register
 
-    - command: insights-client --collector malware-detection
-      register: collect_malware_detection
-      become: true
-    
-    - debug:
-        var: collect_malware_detection
+      - command: insights-client --collector malware-detection
+        register: collect_malware_detection
+        become: true
+      
+      - debug:
+          var: collect_malware_detection
 
-    - lineinfile:
-        dest: /etc/insights-client/malware-detection-config.yml
-        regexp: '^test_scan'
-        line: 'test_scan: false'
-        backup: yes
-        create: yes
-        state: present
-      become: true
+      - lineinfile:
+          dest: /etc/insights-client/malware-detection-config.yml
+          regexp: '^test_scan'
+          line: 'test_scan: false'
+          backup: yes
+          create: yes
+          state: present
+        become: true
+      when: config.test_scan | default("true") == "true"
 
     - command: insights-client --collector malware-detection
       register: collect_malware_detection
