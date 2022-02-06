@@ -62,8 +62,6 @@
     - command: insights-client --collector malware-detection
       register: collect_malware_detection
       become: true
-      when: collect_malware_detection.rc == 0
     
     - debug:
         var: collect_malware_detection
-      when: collect_malware_detection.rc == 0
