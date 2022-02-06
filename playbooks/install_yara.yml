@@ -55,7 +55,9 @@
           create: yes
           state: present
         become: true
-      when: config.test_scan
+      when: config.test_scan | default("true")
+      vars:
+        config: "{{ read_config.stdout | from_yaml }}"
 
     - command: insights-client --collector malware-detection
       register: collect_malware_detection
