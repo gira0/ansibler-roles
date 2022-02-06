@@ -23,6 +23,13 @@
     - debug:
         var: test_connection
 
+    - command: insights-client --register
+      register: register
+      become: true
+
+    - debug:
+        var: register
+
     - command: insights-client --collector malware-detection
       register: collect_malware_detection
       become: true
