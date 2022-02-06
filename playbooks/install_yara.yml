@@ -1,0 +1,30 @@
+- hosts: all
+  collections:
+  vars:
+  roles:
+  tasks:
+    - dnf:
+        name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+        state: present
+      become: true
+      
+    - dnf:
+        name: 
+          - yara
+          - insights-client
+        state: present
+      become: true
+
+    - command: insights-client --test-connection
+      register: test_connection
+      become: true
+
+    - debug:
+        var: test_connection
+
+    - command: insights-client --collector malware-detection
+      register: collect_malware_detection
+      become: true
+    
+    - debug:
+        var: collect_malware_detection
