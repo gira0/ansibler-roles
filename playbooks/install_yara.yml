@@ -3,6 +3,15 @@
   vars:
   roles:
   tasks:
+    - command: cat /etc/insights-client/malware-detection-config.yml
+      register: read_config
+      become: true
+
+    - debug:
+        var: config.test_scan
+      vars:
+        config: "{{ read_config | from_yaml }}"
+
     - dnf:
         name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
         state: present
@@ -36,3 +45,21 @@
     
     - debug:
         var: collect_malware_detection
+
+    - lineinfile:
+        dest: /etc/insights-client/malware-detection-config.yml
+        regexp: '^test_scan'
+        line: 'test_scan: false'
+        backup: yes
+        create: yes
+        state: present
+      become: true
+
+    - command: insights-client --collector malware-detection
+      register: collect_malware_detection
+      become: true
+      when: collect_malware_detection.rc == 0
+    
+    - debug:
+        var: collect_malware_detection
+      when: collect_malware_detection.rc == 0
