@@ -55,7 +55,7 @@
           create: yes
           state: present
         become: true
-      when: config.test_scan | default("true")
+      when: config.test_scan
 
     - command: insights-client --collector malware-detection
       register: collect_malware_detection
