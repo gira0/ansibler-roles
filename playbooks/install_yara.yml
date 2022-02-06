@@ -8,9 +8,9 @@
       become: true
 
     - debug:
-        var: config.test_scan
+        var: config
       vars:
-        config: "{{ read_config | from_yaml }}"
+        config: "{{ read_config.stdout | from_yaml }}"
 
     - dnf:
         name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
