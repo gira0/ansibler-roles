@@ -11,14 +11,13 @@
         var: config.test_scan
       vars:
         config: "{{ read_config.stdout | from_yaml }}"
-        
+
     - block:
       - dnf:
           name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
           state: present
           disable_gpg_check: true
         become: true
-
 
       - dnf:
           name: 
@@ -56,7 +55,7 @@
           create: yes
           state: present
         become: true
-      when: config.test_scan | default("true") == "true"
+      when: config.test_scan | default("true")
 
     - command: insights-client --collector malware-detection
       register: collect_malware_detection
